@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const Users = require("../models/Users");
 
-const authController = {
+const authsController = {
     registerUser: async (req, res, next) => {
         try {
             const { firstname, lastname, username, password } = req.body;
@@ -40,7 +40,7 @@ const authController = {
             return res.status(201).json({
                 success: true,
                 status_message: "New user registered.",
-                data: { username, accessToken },
+                data: { username, accessToken, expiresIn: 7 * 24 * 60 * 60 * 1000 },
             });
         } catch (error) {
             next(error);
@@ -147,4 +147,4 @@ const authController = {
     },
 };
 
-module.exports = authController;
+module.exports = authsController;
