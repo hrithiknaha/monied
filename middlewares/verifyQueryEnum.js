@@ -5,6 +5,7 @@ const verifyQueryEnum = async (req, res, next) => {
         if (type === "BANK" || type === "CREDIT_CARD") next();
         else throw new Error("Provide valid query params");
     } catch (error) {
+        res.statusCode = 400;
         next(error);
     }
 };

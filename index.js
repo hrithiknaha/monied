@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 const connectDB = require("./configs/db");
+const errorHandler = require("./middlewares/errorHandler");
 
 const authsRoute = require("./routes/authsRoute");
 const accountsRoute = require("./routes/accountsRoute");
@@ -23,6 +24,8 @@ app.use("/api/auth", authsRoute);
 app.use("/api/accounts", verifyJWT, accountsRoute);
 app.use("/api/incomes", verifyJWT, incomesRoute);
 app.use("/api/expenses", verifyJWT, expensesRoute);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
 
