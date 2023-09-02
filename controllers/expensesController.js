@@ -29,34 +29,25 @@ const expensesController = {
 
     getAllExpenses: async (req, res, next) => {
         try {
-            const user = await Users.findOne({ username: req.user }).populate({
-                path: "accounts",
-                populate: { path: "expenses" },
-            });
+            const user = await Users.findOne({ username: req.user })
+                .populate({
+                    path: "accounts",
+                    populate: { path: "expenses" },
+                })
+                .lean();
 
-            const aggregatedExpenses = [];
-
-            user.accounts.forEach((account) => {
-                const accountDetails = {
-                    account: account._id,
-                    account_name: account.name,
-                    account_type: account.type,
-                    account_entity_name: account.entity_name,
-                };
-
-                const expenses = account.expenses.map((expense) => {
+            const aggregatedExpenses = user.accounts.flatMap((account) => {
+                return account.expenses.map((expense) => {
                     return {
-                        ...accountDetails,
-                        _id: expense._id,
-                        expense_name: expense.name,
-                        expense_amount: expense.amount,
-                        expense_transaction_date: expense.transaction_date,
-                        expense_createdAt: expense.createdAt,
-                        expense_updatedAt: expense.updatedAt,
+                        account: {
+                            _id: account._id,
+                            account_name: account.name,
+                            account_type: account.type,
+                            account_entity_name: account.entity_name,
+                        },
+                        ...expense,
                     };
                 });
-
-                aggregatedExpenses.push(...expenses);
             });
 
             res.status(200).json({ status: true, status_message: "All expenses Details", data: aggregatedExpenses });
