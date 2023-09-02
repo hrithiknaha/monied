@@ -21,7 +21,7 @@ const expensesController = {
 
             await account.save();
 
-            res.status(201).json({ status: true, status_message: "Expense Added", expense });
+            res.status(201).json({ status: true, status_message: "Expense Added", data: expense });
         } catch (error) {
             next(error);
         }

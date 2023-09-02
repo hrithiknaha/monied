@@ -21,7 +21,7 @@ const incomesController = {
 
             await account.save();
 
-            res.status(201).json({ status: true, status_message: "Income Added", income });
+            res.status(201).json({ status: true, status_message: "Income Added", data: income });
         } catch (error) {
             next(error);
         }
