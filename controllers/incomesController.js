@@ -7,11 +7,9 @@ const incomesController = {
         try {
             const { name, amount, date, account_id } = req.body;
 
-            const user = await Users.findOne({ username: req.user });
+            const userAccounts = await Users.findOne({ username: req.user }).populate("accounts");
 
-            const userAccounts = user.accounts;
-
-            const account = userAccounts.filter((account) => account.id === account_id);
+            const account = userAccounts.accounts.filter((account) => account.id === account_id);
 
             if (account.length === 0)
                 return res

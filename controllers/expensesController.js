@@ -7,11 +7,9 @@ const expensesController = {
         try {
             const { name, amount, date, account_id } = req.body;
 
-            const user = await Users.findOne({ username: req.user });
+            const userAccounts = await Users.findOne({ username: req.user }).populate("accounts");
 
-            const userAccounts = user.accounts;
-
-            const account = userAccounts.filter((account) => account.id === account_id);
+            const account = userAccounts.accounts.filter((account) => account.id === account_id);
 
             if (account.length === 0)
                 return res
@@ -23,7 +21,9 @@ const expensesController = {
             const expense = await Expenses.create({ name, amount, transaction_date: date });
 
             accountObj.expenses.push(expense._id);
-            accountObj.balance -= amount;
+
+            if (accountObj.type === "BANK") accountObj.balance -= amount;
+            else if (accountObj.type === "CREDIT_CARD") accountObj.amount_due += amount;
 
             await accountObj.save();
 
