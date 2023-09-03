@@ -7,19 +7,25 @@ const expensesController = {
         try {
             const { name, amount, date, account_id } = req.body;
 
-            const account = await Accounts.findById(account_id);
+            const user = await Users.findOne({ username: req.user });
 
-            if (!account)
+            const userAccounts = user.accounts;
+
+            const account = userAccounts.filter((account) => account.id === account_id);
+
+            if (account.length === 0)
                 return res
                     .status(400)
                     .json({ status: false, status_message: "No Account associated with that account id." });
 
+            const accountObj = await Accounts.findById(account_id);
+
             const expense = await Expenses.create({ name, amount, transaction_date: date });
 
-            account.expenses.push(expense._id);
-            account.balance -= amount;
+            accountObj.expenses.push(expense._id);
+            accountObj.balance -= amount;
 
-            await account.save();
+            await accountObj.save();
 
             res.status(201).json({ status: true, status_message: "Expense Added", data: expense });
         } catch (error) {
