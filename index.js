@@ -12,6 +12,7 @@ const accountsRoute = require("./routes/accountsRoute");
 const incomesRoute = require("./routes/incomesRoute");
 const expensesRoute = require("./routes/expensesRoute");
 const repaymentsRoute = require("./routes/repaymentsRoute");
+const categoriesRoute = require("./routes/categoriesRoute");
 
 const verifyJWT = require("./middlewares/verifyJWT");
 
@@ -26,6 +27,7 @@ app.use("/api/accounts", verifyJWT, accountsRoute);
 app.use("/api/incomes", verifyJWT, incomesRoute);
 app.use("/api/expenses", verifyJWT, expensesRoute);
 app.use("/api/repayments", verifyJWT, repaymentsRoute);
+app.use("/api/categories", verifyJWT, categoriesRoute);
 
 app.use(errorHandler);
 

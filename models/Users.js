@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
         username: { type: String, required: true },
         password: { type: String, required: true },
         accounts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Accounts" }],
+        categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Categories" }],
     },
     { timeseries: true, timestamps: true }
 );
