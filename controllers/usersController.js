@@ -3,11 +3,13 @@ const Users = require("../models/Users");
 const usersController = {
     getUser: async (req, res, next) => {
         try {
-            const { username } = req.user;
-
-            console.log(username);
-
-            const user = await Users.findOne({ username }).select("-password").populate("accounts categories");
+            const user = await Users.findOne({ username: req.user })
+                .select("-password")
+                .populate({
+                    path: "accounts",
+                    populate: { path: "expenses incomes repayments" },
+                })
+                .populate("categories");
 
             res.status(200).json({
                 status: true,
