@@ -18,6 +18,31 @@ const categoriesController = {
             next(error);
         }
     },
+
+    getAllMonthlyCategory: async (req, res, next) => {
+        try {
+            const user = await Users.findOne({ username: req.user });
+
+            const categories = user.categories;
+
+            res.status(201).json({ status: true, status_message: "Category Added", data: categories });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getMontlyCategory: async (req, res, next) => {
+        try {
+            const { categoryId } = req.params;
+            const user = await Users.findOne({ username: req.user });
+
+            const category = user.categories.filter((category) => category.id === categoryId);
+
+            res.status(201).json({ status: true, status_message: "Category Added", data: category });
+        } catch (error) {
+            next(error);
+        }
+    },
 };
 
 module.exports = categoriesController;
