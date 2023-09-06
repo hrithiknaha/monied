@@ -61,6 +61,41 @@ const expensesController = {
             next(error);
         }
     },
+
+    getExpense: async (req, res, next) => {
+        try {
+            const { expenseId } = req.params;
+
+            const user = await Users.findOne({ username: req.user })
+                .populate({
+                    path: "accounts",
+                    populate: { path: "expenses" },
+                })
+                .lean();
+
+            const aggregatedExpenses = user.accounts.flatMap((account) => {
+                return account.expenses
+                    .filter((expenses) => {
+                        return expenses._id.toString() === expenseId;
+                    })
+                    .map((expense) => {
+                        return {
+                            account: {
+                                _id: account._id,
+                                account_name: account.name,
+                                account_type: account.type,
+                                account_entity_name: account.entity_name,
+                            },
+                            ...expense,
+                        };
+                    });
+            });
+
+            res.status(200).json({ status: true, status_message: "All expenses Details", data: aggregatedExpenses });
+        } catch (error) {
+            next(error);
+        }
+    },
 };
 
 module.exports = expensesController;
