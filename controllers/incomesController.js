@@ -59,6 +59,41 @@ const incomesController = {
             next(error);
         }
     },
+
+    getIncomes: async (req, res, next) => {
+        try {
+            const { incomesId } = req.params;
+
+            const user = await Users.findOne({ username: req.user })
+                .populate({
+                    path: "accounts",
+                    populate: { path: "incomes" },
+                })
+                .lean();
+
+            const aggregatedIncomes = user.accounts.flatMap((account) => {
+                return account.incomes
+                    .filter((incomes) => {
+                        return incomes._id.toString() === incomesId;
+                    })
+                    .map((income) => {
+                        return {
+                            account: {
+                                _id: account._id,
+                                account_name: account.name,
+                                account_type: account.type,
+                                account_entity_name: account.entity_name,
+                            },
+                            ...income,
+                        };
+                    });
+            });
+
+            res.status(200).json({ status: true, status_message: "All incomes Details", data: aggregatedIncomes });
+        } catch (error) {
+            next(error);
+        }
+    },
 };
 
 module.exports = incomesController;
