@@ -6,7 +6,7 @@ const incomesSchema = new mongoose.Schema(
         amount: { type: Number, required: true },
         transaction_date: { type: Date, required: true },
     },
-    { timeseries: true, timestamps: true }
+    { timestamps: true }
 );
 
 module.exports = mongoose.model("Incomes", incomesSchema);

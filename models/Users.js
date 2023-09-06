@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
         accounts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Accounts" }],
         categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Categories" }],
     },
-    { timeseries: true, timestamps: true }
+    { timestamps: true }
 );
 
 module.exports = mongoose.model("Users", userSchema);

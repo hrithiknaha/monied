@@ -12,7 +12,7 @@ const accountSchema = new mongoose.Schema(
         incomes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Incomes" }],
         repayments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Repayments" }],
     },
-    { timeseries: true, timestamps: true }
+    { timestamps: true }
 );
 
 module.exports = mongoose.model("Accounts", accountSchema);
