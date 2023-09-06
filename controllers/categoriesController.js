@@ -8,11 +8,12 @@ const categoriesController = {
 
             const user = await Users.findOne({ username: req.user });
 
-            console.log(req.body);
+            const monthCategory = await Categories.create({ name, start_date, end_date, month, year, categories });
 
-            // const monthCategory = new Categories.create({ name, start_date, end_date, month, year, categories });
+            user.categories.push(monthCategory._id);
+            user.save();
 
-            // user.Categories;
+            res.status(201).json({ status: true, status_message: "Category Added", data: monthCategory });
         } catch (error) {
             next(error);
         }
