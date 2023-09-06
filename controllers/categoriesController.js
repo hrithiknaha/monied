@@ -21,11 +21,11 @@ const categoriesController = {
 
     getAllMonthlyCategory: async (req, res, next) => {
         try {
-            const user = await Users.findOne({ username: req.user });
+            const user = await Users.findOne({ username: req.user }).populate("categories");
 
             const categories = user.categories;
 
-            res.status(201).json({ status: true, status_message: "Category Added", data: categories });
+            res.status(201).json({ status: true, status_message: "Categories found", data: categories });
         } catch (error) {
             next(error);
         }
@@ -34,11 +34,11 @@ const categoriesController = {
     getMontlyCategory: async (req, res, next) => {
         try {
             const { categoryId } = req.params;
-            const user = await Users.findOne({ username: req.user });
+            const user = await Users.findOne({ username: req.user }).populate("categories");
 
             const category = user.categories.filter((category) => category.id === categoryId);
 
-            res.status(201).json({ status: true, status_message: "Category Added", data: category });
+            res.status(201).json({ status: true, status_message: "Category Found", data: category });
         } catch (error) {
             next(error);
         }
