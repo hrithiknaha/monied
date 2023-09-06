@@ -73,10 +73,10 @@ const expensesController = {
                 })
                 .lean();
 
-            const aggregatedExpenses = user.accounts.flatMap((account) => {
+            const aggregatedExpense = user.accounts.flatMap((account) => {
                 return account.expenses
-                    .filter((expenses) => {
-                        return expenses._id.toString() === expenseId;
+                    .filter((expense) => {
+                        return expense._id.toString() === expenseId;
                     })
                     .map((expense) => {
                         return {
@@ -91,7 +91,7 @@ const expensesController = {
                     });
             });
 
-            res.status(200).json({ status: true, status_message: "All expenses Details", data: aggregatedExpenses });
+            res.status(200).json({ status: true, status_message: "All expenses Details", data: aggregatedExpense });
         } catch (error) {
             next(error);
         }

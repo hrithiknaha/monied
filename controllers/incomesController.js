@@ -62,7 +62,7 @@ const incomesController = {
 
     getIncomes: async (req, res, next) => {
         try {
-            const { incomesId } = req.params;
+            const { incomeId } = req.params;
 
             const user = await Users.findOne({ username: req.user })
                 .populate({
@@ -71,10 +71,10 @@ const incomesController = {
                 })
                 .lean();
 
-            const aggregatedIncomes = user.accounts.flatMap((account) => {
+            const aggregatedIncome = user.accounts.flatMap((account) => {
                 return account.incomes
-                    .filter((incomes) => {
-                        return incomes._id.toString() === incomesId;
+                    .filter((income) => {
+                        return income._id.toString() === incomeId;
                     })
                     .map((income) => {
                         return {
@@ -89,7 +89,7 @@ const incomesController = {
                     });
             });
 
-            res.status(200).json({ status: true, status_message: "All incomes Details", data: aggregatedIncomes });
+            res.status(200).json({ status: true, status_message: "All incomes Details", data: aggregatedIncome });
         } catch (error) {
             next(error);
         }

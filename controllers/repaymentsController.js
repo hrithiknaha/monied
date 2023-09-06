@@ -44,6 +44,70 @@ const repaymentsController = {
             next(error);
         }
     },
+
+    getAllRepayment: async (req, res, next) => {
+        try {
+            const user = await Users.findOne({ username: req.user })
+                .populate({
+                    path: "accounts",
+                    populate: { path: "repayments" },
+                })
+                .lean();
+
+            const aggregatedRepayments = user.accounts.flatMap((account) => {
+                return account.repayments.map((repayment) => {
+                    return {
+                        account: {
+                            _id: account._id,
+                            account_name: account.name,
+                            account_type: account.type,
+                            account_entity_name: account.entity_name,
+                        },
+                        ...repayment,
+                    };
+                });
+            });
+
+            res.status(200).json({ status: true, status_message: "All expenses Details", data: aggregatedRepayments });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getRepayment: async (req, res, next) => {
+        try {
+            const { repaymentId } = req.params;
+
+            const user = await Users.findOne({ username: req.user })
+                .populate({
+                    path: "accounts",
+                    populate: { path: "repayments" },
+                })
+                .lean();
+
+            const aggregatedRepayment = user.accounts.flatMap((account) => {
+                return account.repayments
+                    .filter((repayment) => {
+                        return repayment._id.toString() === repaymentId;
+                    })
+                    .map((repayment) => {
+                        return {
+                            account: {
+                                _id: account._id,
+                                account_name: account.name,
+                                account_type: account.type,
+                                account_entity_name: account.entity_name,
+                            },
+                            ...repayment,
+                        };
+                    });
+            });
+
+            res.status(200).json({ status: true, status_message: "All expenses Details", data: aggregatedRepayment });
+        } catch (error) {
+            next(error);
+        }
+    },
 };
 
 module.exports = repaymentsController;
