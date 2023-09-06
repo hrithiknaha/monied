@@ -1,25 +1,41 @@
 const Users = require("../models/Users");
 const Accounts = require("../models/Accounts");
 const Expenses = require("../models/Expenses");
+const Categories = require("../models/Categories");
 
 const expensesController = {
     addExpense: async (req, res, next) => {
         try {
-            const { name, amount, date, account_id } = req.body;
+            const { name, amount, date, category_name, account_id, category_id } = req.body;
 
-            const userAccounts = await Users.findOne({ username: req.user }).populate("accounts");
+            const userAccounts = await Users.findOne({ username: req.user }).populate("accounts categories");
 
             const account = userAccounts.accounts.filter((account) => account.id === account_id);
+            const userCategory = userAccounts.categories.filter((category) => category.id === category_id);
 
             if (account.length === 0)
                 return res
                     .status(400)
                     .json({ status: false, status_message: "No Account associated with that account id." });
 
+            if (userCategory.length === 0)
+                return res
+                    .status(400)
+                    .json({ status: false, status_message: "No Category associated with that category id." });
+
+            userCategory[0].categories.map((cat) => {
+                if (cat.title === category_name) cat.amount -= amount;
+            });
+
+            await Categories.findByIdAndUpdate(category_id, {
+                $set: {
+                    categories: userCategory[0].categories,
+                },
+            });
+
+            const expense = await Expenses.create({ name, amount, transaction_date: date, category: category_name });
+
             const accountObj = await Accounts.findById(account_id);
-
-            const expense = await Expenses.create({ name, amount, transaction_date: date });
-
             accountObj.expenses.push(expense._id);
 
             if (accountObj.type === "BANK") accountObj.balance -= amount;
