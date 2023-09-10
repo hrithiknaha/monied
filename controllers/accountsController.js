@@ -42,9 +42,12 @@ const accountsController = {
         try {
             const { accountId } = req.params;
 
-            const userAccounts = await Users.findOne({ username: req.user }).populate("accounts");
+            const userAccounts = await Users.findOne({ username: req.user }).populate({
+                path: "accounts",
+                populate: "incomes expenses repayments",
+            });
 
-            const account = userAccounts.accounts.filter((account) => account.id === accountId);
+            const account = userAccounts.accounts.filter((account) => account.id === accountId)[0];
 
             res.status(200).json({ status: true, status_message: "Account Details", data: account });
         } catch (error) {
