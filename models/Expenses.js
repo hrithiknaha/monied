@@ -5,7 +5,8 @@ const expenseSchema = new mongoose.Schema(
         name: { type: String, required: true },
         amount: { type: Number, required: true },
         transaction_date: { type: Date, required: true },
-        category: { type: String },
+        categoryTitle: { type: String },
+        category: { type: mongoose.Schema.Types.ObjectId, ref: "Categories" },
     },
     { timestamps: true }
 );

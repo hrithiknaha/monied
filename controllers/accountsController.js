@@ -44,7 +44,11 @@ const accountsController = {
 
             const userAccounts = await Users.findOne({ username: req.user }).populate({
                 path: "accounts",
-                populate: "incomes expenses repayments",
+                populate: [
+                    { path: "incomes" },
+                    { path: "expenses", populate: { path: "category" } },
+                    { path: "repayments" },
+                ],
             });
 
             const account = userAccounts.accounts.filter((account) => account.id === accountId)[0];

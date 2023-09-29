@@ -33,7 +33,13 @@ const expensesController = {
                 },
             });
 
-            const expense = await Expenses.create({ name, amount, transaction_date: date, category: category_name });
+            const expense = await Expenses.create({
+                name,
+                amount,
+                transaction_date: date,
+                categoryTitle: category_name,
+                category: category_id,
+            });
 
             const accountObj = await Accounts.findById(account_id);
             accountObj.expenses.push(expense._id);
@@ -54,7 +60,12 @@ const expensesController = {
             const user = await Users.findOne({ username: req.user })
                 .populate({
                     path: "accounts",
-                    populate: { path: "expenses" },
+                    populate: {
+                        path: "expenses",
+                        populate: {
+                            path: "category",
+                        },
+                    },
                 })
                 .lean();
 
@@ -85,7 +96,12 @@ const expensesController = {
             const user = await Users.findOne({ username: req.user })
                 .populate({
                     path: "accounts",
-                    populate: { path: "expenses" },
+                    populate: {
+                        path: "expenses",
+                        populate: {
+                            path: "category",
+                        },
+                    },
                 })
                 .lean();
 

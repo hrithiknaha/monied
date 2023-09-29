@@ -7,7 +7,7 @@ const usersController = {
                 .select("-password")
                 .populate({
                     path: "accounts",
-                    populate: { path: "expenses incomes repayments" },
+                    populate: [{ path: "expenses", populate: { path: "category" } }, "incomes", "repayments"],
                 })
                 .populate("categories");
 
