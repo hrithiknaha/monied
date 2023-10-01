@@ -24,7 +24,9 @@ const expensesController = {
                     .json({ status: false, status_message: "No Category associated with that category id." });
 
             userCategory[0].categories.map((cat) => {
-                if (cat.title === category_name) cat.amount -= amount;
+                if (cat.title === category_name) {
+                    cat.amountUsed += amount;
+                }
             });
 
             await Categories.findByIdAndUpdate(category_id, {
