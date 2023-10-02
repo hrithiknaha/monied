@@ -23,9 +23,18 @@ const expensesController = {
                     .status(400)
                     .json({ status: false, status_message: "No Category associated with that category id." });
 
+            const expense = await Expenses.create({
+                name,
+                amount,
+                transaction_date: date,
+                categoryTitle: category_name,
+                category: category_id,
+            });
+
             userCategory[0].categories.map((cat) => {
                 if (cat.title === category_name) {
                     cat.amountUsed += amount;
+                    cat.expenses.push(expense._id);
                 }
             });
 
@@ -33,14 +42,6 @@ const expensesController = {
                 $set: {
                     categories: userCategory[0].categories,
                 },
-            });
-
-            const expense = await Expenses.create({
-                name,
-                amount,
-                transaction_date: date,
-                categoryTitle: category_name,
-                category: category_id,
             });
 
             const accountObj = await Accounts.findById(account_id);
