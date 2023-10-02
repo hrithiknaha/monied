@@ -34,7 +34,10 @@ const categoriesController = {
     getMontlyCategory: async (req, res, next) => {
         try {
             const { categoryId } = req.params;
-            const user = await Users.findOne({ username: req.user }).populate("categories");
+            const user = await Users.findOne({ username: req.user }).populate({
+                path: "categories",
+                populate: "categories.expenses",
+            });
 
             const category = user.categories.filter((category) => category.id === categoryId);
 
